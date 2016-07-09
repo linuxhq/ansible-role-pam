@@ -1,0 +1,53 @@
+---
+- name: Install pam package
+  tags: pam
+  yum: name=pam
+       state=present
+       update_cache=yes
+  register: pam_yum
+
+- block:
+    - name: Configure limits.conf
+      pam_limits: comment={{ item.comment|default(omit) }}
+                  dest=/etc/security/limits.conf
+                  domain={{ item.domain }}
+                  limit_item={{ item.limit_item }}
+                  limit_type={{ item.limit_type }}
+                  use_max={{ item.use_max|default(omit) }}
+                  use_min={{ item.use_min|default(omit) }}
+                  value={{ item.value }}
+      with_items: "{{ pam_limits_conf }}"
+      when:
+        - item.domain is defined
+        - item.limit_item is defined
+        - item.limit_type is defined
+        - item.value is defined
+    - name: Create empty files in limits.d
+      file: path=/etc/security/limits.d/{{ item.order }}-{{ item.file }}.conf
+            owner=root
+            group=root
+            mode=0644
+            state=touch
+      with_items: "{{ pam_limits_d }}"
+      when:
+        - item.file is defined
+        - item.order is defined
+    - name: Configure limits.d
+      pam_limits: comment={{ item.1.comment|default(omit) }}
+                  dest=/etc/security/limits.d/{{ item.0.order }}-{{ item.0.file }}.conf
+                  domain={{ item.1.domain }}
+                  limit_item={{ item.1.limit_item }}
+                  limit_type={{ item.1.limit_type }}
+                  use_max={{ item.1.use_max|default(omit) }}
+                  use_min={{ item.1.use_min|default(omit) }}
+                  value={{ item.1.value }}
+      with_subelements:
+        - "{{ pam_limits_d }}"
+        - limits
+      when:
+        - item.1.domain is defined
+        - item.1.limit_item is defined
+        - item.1.limit_type is defined
+        - item.1.value is defined
+  tags: pam
+  when: pam_yum|success
