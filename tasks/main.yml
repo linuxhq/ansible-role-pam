@@ -40,13 +40,13 @@
     - name: Configure pam limits.d
       pam_limits:
         comment: "{{ item.1.comment|default(omit) }}"
-          dest: "/etc/security/limits.d/{{ item.0.order }}-{{ item.0.file }}.conf"
-          domain: "{{ item.1.domain }}"
-          limit_item: "{{ item.1.limit_item }}"
-          limit_type: "{{ item.1.limit_type }}"
-          use_max: "{{ item.1.use_max|default(omit) }}"
-          use_min: "{{ item.1.use_min|default(omit) }}"
-          value: "{{ item.1.value }}"
+        dest: "/etc/security/limits.d/{{ item.0.order }}-{{ item.0.file }}.conf"
+        domain: "{{ item.1.domain }}"
+        limit_item: "{{ item.1.limit_item }}"
+        limit_type: "{{ item.1.limit_type }}"
+        use_max: "{{ item.1.use_max|default(omit) }}"
+        use_min: "{{ item.1.use_min|default(omit) }}"
+        value: "{{ item.1.value }}"
       with_subelements:
         - "{{ pam_limits_d }}"
         - limits
