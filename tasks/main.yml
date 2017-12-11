@@ -38,7 +38,7 @@
         - item.file is defined
         - item.order is defined
 
-    - name: Configuring pam.d configurations
+    - name: Applying pam.d limit configurations
       pam_limits:
         backup: "{{ item.1.backup|default('no') }}"
         comment: "{{ item.1.comment|default(omit) }}"
