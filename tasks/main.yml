@@ -1,22 +1,23 @@
 ---
-- name: Ensure that pam is installed
+- name: Ensure that the pam package is installed
   tags: pam
+  become: true
   yum:
     name: pam
     state: present
-    update_cache: yes
   register: pam_yum
 
 - block:
-    - name: Configure pam limits.conf
+    - name: Applying limits.conf configurations
       pam_limits:
+        backup: "{{ item.backup|default('no') }}"
         comment: "{{ item.comment|default(omit) }}"
         dest: /etc/security/limits.conf
         domain: "{{ item.domain }}"
         limit_item: "{{ item.limit_item }}"
         limit_type: "{{ item.limit_type }}"
-        use_max: "{{ item.use_max|default(omit) }}"
-        use_min: "{{ item.use_min|default(omit) }}"
+        use_max: "{{ item.use_max|default('no') }}"
+        use_min: "{{ item.use_min|default('no') }}"
         value: "{{ item.value }}"
       with_items: "{{ pam_limits_conf }}"
       when:
@@ -25,7 +26,7 @@
         - item.limit_type is defined
         - item.value is defined
 
-    - name: Create empty files in limits.d
+    - name: Creating empty files in limits.d
       file:
         path: "/etc/security/limits.d/{{ item.order }}-{{ item.file }}.conf"
         owner: root
@@ -37,15 +38,16 @@
         - item.file is defined
         - item.order is defined
 
-    - name: Configure pam limits.d
+    - name: Configuring pam.d configurations
       pam_limits:
+        backup: "{{ item.1.backup|default('no') }}"
         comment: "{{ item.1.comment|default(omit) }}"
         dest: "/etc/security/limits.d/{{ item.0.order }}-{{ item.0.file }}.conf"
         domain: "{{ item.1.domain }}"
         limit_item: "{{ item.1.limit_item }}"
         limit_type: "{{ item.1.limit_type }}"
-        use_max: "{{ item.1.use_max|default(omit) }}"
-        use_min: "{{ item.1.use_min|default(omit) }}"
+        use_max: "{{ item.1.use_max|default('no') }}"
+        use_min: "{{ item.1.use_min|default('no') }}"
         value: "{{ item.1.value }}"
       with_subelements:
         - "{{ pam_limits_d }}"
@@ -56,5 +58,6 @@
         - item.1.limit_type is defined
         - item.1.value is defined
   tags: pam
+  become: true
   when: pam_yum|success
 ...
