@@ -14,6 +14,16 @@ Available variables are listed below, along with default values:
 
     pam_limits_conf: []
     pam_limits_d: []
+    pam_pwquality_dcredit: 1
+    pam_pwquality_difok: 5
+    pam_pwquality_gecoscheck: 0
+    pam_pwquality_lcredit: 1
+    pam_pwquality_maxrepeat: 0
+    pam_pwquality_maxclassrepeat: 0
+    pam_pwquality_minclass: 0
+    pam_pwquality_minlen: 9
+    pam_pwquality_ocredit: 1
+    pam_pwquality_ucredit: 1
 
 Below is example syntax for each variable:
 
@@ -61,6 +71,16 @@ None
                   limit_item: fsize
                   limit_type: hard
                   value: 1000000
+          pam_pwquality_dcredit: -1
+          pam_pwquality_difok: 8
+          pam_pwquality_gecoscheck: 1
+          pam_pwquality_lcredit: -1
+          pam_pwquality_maxrepeat: 4
+          pam_pwquality_maxclassrepeat: 4
+          pam_pwquality_minclass: 4
+          pam_pwquality_minlen: 15
+          pam_pwquality_ocredit: -1
+          pam_pwquality_ucredit: -1
 
 ## License
 
