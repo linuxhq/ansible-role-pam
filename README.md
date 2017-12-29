@@ -60,17 +60,13 @@ None
       roles:
         - role: linuxhq.pam
           pam_limits_d:
-            - file: ansible
+            - file: linuxhq
               order: 99
               limits:
-                - domain: joe
-                  limit_item: nofile
-                  limit_type: soft
-                  value: 64000
-                - domain: smith
-                  limit_item: fsize
+                - domain: '*'
+                  limit_item: core
                   limit_type: hard
-                  value: 1000000
+                  value: 0
           pam_pwquality_dcredit: -1
           pam_pwquality_difok: 8
           pam_pwquality_gecoscheck: 1
