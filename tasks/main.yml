@@ -29,18 +29,6 @@
         - item.limit_type is defined
         - item.value is defined
 
-    - name: Creating empty files in limits.d
-      file:
-        path: "/etc/security/limits.d/{{ item.order }}-{{ item.file }}.conf"
-        owner: root
-        group: root
-        mode: 0644
-        state: touch
-      with_items: "{{ pam_limits_d }}"
-      when:
-        - item.file is defined
-        - item.order is defined
-
     - name: Applying pam.d limit configurations
       pam_limits:
         backup: "{{ item.1.backup|default('no') }}"
@@ -68,7 +56,6 @@
         owner: root
         group: root
         mode: 0644
-  when: pam_pwquality_yum|success
   tags: pam
   become: true
   when: pam_yum|success
