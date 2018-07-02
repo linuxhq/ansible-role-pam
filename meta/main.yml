@@ -1,6 +1,7 @@
 ---
 dependencies: []
 galaxy_info:
+  role_name: pam
   author: tkimball83
   description: RHEL/CentOS - Pluggable Authentication Modules
   license: GPLv3
