@@ -1,5 +1,5 @@
 ---
-- name: Ensure that the pam package is installed
+- name: Ensure that the pam packages are installed
   tags: pam
   become: true
   yum:
@@ -23,7 +23,9 @@
     use_max: "{{ item.use_max|default('no') }}"
     use_min: "{{ item.use_min|default('no') }}"
     value: "{{ item.value }}"
-  with_items: "{{ pam_limits_conf }}"
+  loop: "{{ pam_limits_conf }}"
+  loop_control:
+    label: "{{ item.domain }}"
   when:
     - item.domain is defined
     - item.limit_item is defined
@@ -44,9 +46,9 @@
     use_max: "{{ item.1.use_max|default('no') }}"
     use_min: "{{ item.1.use_min|default('no') }}"
     value: "{{ item.1.value }}"
-  with_subelements:
-    - "{{ pam_limits_d }}"
-    - limits
+  loop: "{{ pam_limits_d|subelements('limits') }}"
+  loop_control:
+    label: "{{ item.1.domain }}"
   when:
     - item.1.domain is defined
     - item.1.limit_item is defined
