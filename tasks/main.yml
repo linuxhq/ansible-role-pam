@@ -6,7 +6,7 @@
     name: "{{ item }}"
     state: present
   register: pam_yum
-  with_items:
+  loop:
     - libpwquality
     - pam
 
@@ -48,7 +48,7 @@
     value: "{{ item.1.value }}"
   loop: "{{ pam_limits_d|subelements('limits') }}"
   loop_control:
-    label: "{{ item.1.domain }}"
+    label: "{{ item.0.file }}"
   when:
     - item.1.domain is defined
     - item.1.limit_item is defined
